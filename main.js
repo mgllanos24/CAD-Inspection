@@ -14,8 +14,8 @@ const conversionLoaderElement = document.getElementById('conversion-loader');
 const convertBtn = document.getElementById('convert-btn');
 const downloadLink = document.getElementById('download-link');
 
-// Set occt-import-js worker path from CDN
-SetOCCTWorkerUrl('https://cdn.jsdelivr.net/npm/occt-import-js@0.0.26/dist/occt-import-js-worker.js');
+// Set occt-import-js worker path for local vendor copy
+SetOCCTWorkerUrl('./vendor/occt-import-js/occt-import-js-worker.js');
 
 function init() {
     // Scene
