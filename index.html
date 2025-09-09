@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STP/STEP File Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="viewer-container"></div>
+    <div id="rev-viewer-container" class="hidden"></div>
+    <div id="controls">
+        <h1>3D CAD Viewer</h1>
+        <p>Upload a .stp, .step, or .sldprt file to view the model.</p>
+        <input type="file" id="file-input" accept=".stp, .step, .sldprt">
+        <div id="loader" class="hidden">Loading...</div>
+        <div id="conversion-loader" class="hidden">Converting to STP...</div>
+        <button id="convert-btn" class="hidden">Convert to STP</button>
+        <a id="download-link" class="hidden"></a>
+        <p id="info-text">Use your mouse to rotate (left-click), pan (right-click), and zoom (scroll).</p>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/",
+            "occt-import-js": "https://cdn.jsdelivr.net/npm/occt-import-js@0.0.26/dist/occt-import-js.module.js",
+            "rev-viewer": "https://cdn.jsdelivr.net/npm/rev-viewer@0.0.10/dist/rev-viewer.js"
+        }
+    }
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
