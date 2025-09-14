@@ -177,8 +177,12 @@ async function handleConversion() {
         downloadLink.textContent = `Download ${stpFileName}`;
         downloadLink.classList.remove('hidden');
 
+        downloadLink.addEventListener('click', () => {
+            setTimeout(() => URL.revokeObjectURL(downloadLink.href), 0);
+        }, { once: true });
+
         conversionLoaderElement.classList.add('hidden');
-        
+
         alert("SLDPRT to STP conversion is a complex process requiring a server-side converter.\n\nThis is a demonstration of the UI flow. A placeholder model is shown, and you can download a dummy STP file.");
 
     }, 1500);
