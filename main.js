@@ -20,6 +20,15 @@ const downloadLink = document.getElementById('download-link');
 // Set occt-import-js worker path for local vendor copy
 SetOCCTWorkerUrl('./vendor/occt-import-js/occt-import-js-worker.js');
 
+// Log asset loading failures (e.g., missing modules or 404 responses)
+// to help users diagnose which resource failed and why.
+window.addEventListener('error', (event) => {
+    const asset = event.target?.src || event.filename;
+    if (asset) {
+        console.error(`Failed to load asset "${asset}":`, event.message || event.error);
+    }
+}, true);
+
 function init() {
     // Scene
     scene = new THREE.Scene();
@@ -148,6 +157,7 @@ async function handleConversion() {
 }
 
 async function loadStepModel(fileName, fileContent) {
+    console.log(`Loading STEP model: ${fileName}`);
     if (currentModel) {
         scene.remove(currentModel);
         currentModel.traverse(child => {
@@ -170,7 +180,7 @@ async function loadStepModel(fileName, fileContent) {
             alert('Error: Could not load the model. Check the console for details.');
         }
     } catch (error) {
-        console.error('An error occurred during model import:', error);
+        console.error(`An error occurred during STEP model import for "${fileName}":`, error);
         alert('An unexpected error occurred. Check the console for details.');
     } finally {
         loaderElement.classList.add('hidden');
@@ -179,6 +189,8 @@ async function loadStepModel(fileName, fileContent) {
 }
 
 async function loadSldprtModel(file) {
+    const fileName = file.name;
+    console.log(`Loading SLDPRT model: ${fileName}`);
     if (revViewer) {
         revViewer.dispose();
     }
@@ -188,7 +200,7 @@ async function loadSldprtModel(file) {
         revViewer = new CADMode(revViewerContainer);
         await revViewer.load(file);
     } catch (error) {
-        console.error('An error occurred during SLDPRT model import:', error);
+        console.error(`An error occurred during SLDPRT model import for "${fileName}":`, error);
         alert('An unexpected error occurred while loading the SLDPRT file. Check the console for details.');
     } finally {
         loaderElement.classList.add('hidden');
