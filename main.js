@@ -17,6 +17,21 @@ const conversionLoaderElement = document.getElementById('conversion-loader');
 const convertBtn = document.getElementById('convert-btn');
 const downloadLink = document.getElementById('download-link');
 
+// Error notification system
+const errorNotification = document.createElement('div');
+errorNotification.id = 'error-notification';
+errorNotification.classList.add('hidden');
+document.body.appendChild(errorNotification);
+
+function showErrorNotification(message) {
+    errorNotification.textContent = message;
+    errorNotification.classList.remove('hidden');
+    setTimeout(() => {
+        errorNotification.classList.add('hidden');
+        errorNotification.textContent = '';
+    }, 5000);
+}
+
 // Set occt-import-js worker path for local vendor copy
 SetOCCTWorkerUrl(
     new URL('./vendor/occt-import-js/dist/occt-import-js-worker.js', import.meta.url).href
@@ -124,6 +139,13 @@ function handleFileSelect(event) {
     loaderElement.classList.remove('hidden');
 
     currentFileName = file.name;
+    if (!file.name.includes('.')) {
+        showErrorNotification('Filename lacks extension');
+        loaderElement.classList.add('hidden');
+        conversionLoaderElement.classList.add('hidden');
+        fileInput.value = '';
+        return;
+    }
     const extension = file.name.split('.').pop().toLowerCase();
 
     if (extension === 'stp' || extension === 'step') {

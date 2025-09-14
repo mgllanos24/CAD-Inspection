@@ -84,3 +84,16 @@ input[type="file"] {
 .hidden {
     display: none;
 }
+
+#error-notification {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(198, 40, 40, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    z-index: 3;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
