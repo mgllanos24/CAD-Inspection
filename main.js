@@ -99,7 +99,12 @@ function resetUI() {
 
 function handleFileSelect(event) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) {
+        loaderElement.classList.add('hidden');
+        conversionLoaderElement.classList.add('hidden');
+        fileInput.value = '';
+        return;
+    }
 
     resetUI();
     loaderElement.classList.remove('hidden');
@@ -110,6 +115,11 @@ function handleFileSelect(event) {
     if (extension === 'stp' || extension === 'step') {
         showThreeJsViewer();
         const reader = new FileReader();
+        reader.onerror = () => {
+            loaderElement.classList.add('hidden');
+            alert('Failed to read file.');
+            fileInput.value = '';
+        };
         reader.onload = (e) => {
             const fileContent = e.target.result;
             loadStepModel(file.name, fileContent);
@@ -122,6 +132,8 @@ function handleFileSelect(event) {
     } else {
         alert('Unsupported file format.');
         loaderElement.classList.add('hidden');
+        conversionLoaderElement.classList.add('hidden');
+        fileInput.value = '';
     }
 }
 
