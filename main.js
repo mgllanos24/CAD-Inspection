@@ -168,6 +168,7 @@ async function loadStepModel(fileName, fileContent) {
                 child.material.dispose();
             }
         });
+        currentModel = null;
     }
 
     const importManager = new ImportManager();
@@ -180,10 +181,12 @@ async function loadStepModel(fileName, fileContent) {
         } else {
             console.error('Failed to load model:', result.message);
             alert('Error: Could not load the model. Check the console for details.');
+            currentModel = null;
         }
     } catch (error) {
         console.error(`An error occurred during STEP model import for "${fileName}":`, error);
         alert('An unexpected error occurred. Check the console for details.');
+        currentModel = null;
     } finally {
         loaderElement.classList.add('hidden');
         fileInput.value = ''; // Reset file input
