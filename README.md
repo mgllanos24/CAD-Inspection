@@ -17,6 +17,12 @@
 3. Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
 4. Upload a `.stp`, `.step`, or `.sldprt` file and inspect the model.
 
+## Running Tests
+Execute the test suite with:
+```bash
+pytest
+```
+
 ## Troubleshooting
 - **Missing dependencies**: If `Flask` is not installed, run `pip install Flask`.
 - **Asset loading errors**: Ensure the `vendor` directory and static assets are present and paths are correct.
