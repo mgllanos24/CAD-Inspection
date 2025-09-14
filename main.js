@@ -31,6 +31,11 @@ window.addEventListener('error', (event) => {
     }
 }, true);
 
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    alert('An unexpected error occurred. Check the console for details.');
+});
+
 function init() {
     // Scene
     scene = new THREE.Scene();
