@@ -16,6 +16,17 @@ const loaderElement = document.getElementById('loader');
 const conversionLoaderElement = document.getElementById('conversion-loader');
 const convertBtn = document.getElementById('convert-btn');
 const downloadLink = document.getElementById('download-link');
+const errorMessageElement = document.getElementById('error-message');
+
+function showError(message) {
+    errorMessageElement.textContent = message;
+    errorMessageElement.classList.remove('hidden');
+}
+
+function clearError() {
+    errorMessageElement.textContent = '';
+    errorMessageElement.classList.add('hidden');
+}
 
 // Set occt-import-js worker path for local vendor copy
 SetOCCTWorkerUrl(
@@ -33,7 +44,7 @@ window.addEventListener('error', (event) => {
 
 window.addEventListener('unhandledrejection', (event) => {
     console.error('Unhandled promise rejection:', event.reason);
-    alert('An unexpected error occurred. Check the console for details.');
+    showError('An unexpected error occurred. Check the console for details.');
 });
 
 function init() {
@@ -100,6 +111,7 @@ function resetUI() {
     downloadLink.download = '';
     downloadLink.textContent = '';
     currentFileName = '';
+    clearError();
 }
 
 function handleFileSelect(event) {
@@ -115,7 +127,7 @@ function handleFileSelect(event) {
 
     const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
     if (file.size > MAX_FILE_SIZE) {
-        alert('File is too large. Maximum allowed size is 50 MB.');
+        showError('File is too large. Maximum allowed size is 50 MB.');
         loaderElement.classList.add('hidden');
         conversionLoaderElement.classList.add('hidden');
         return;
@@ -131,7 +143,7 @@ function handleFileSelect(event) {
         const reader = new FileReader();
         reader.onerror = () => {
             loaderElement.classList.add('hidden');
-            alert('Failed to read file.');
+            showError('Failed to read file.');
             fileInput.value = '';
         };
         reader.onload = (e) => {
@@ -144,7 +156,7 @@ function handleFileSelect(event) {
         convertBtn.classList.remove('hidden');
         loadSldprtModel(file);
     } else {
-        alert('Unsupported file format.');
+        showError('Unsupported file format.');
         loaderElement.classList.add('hidden');
         conversionLoaderElement.classList.add('hidden');
         fileInput.value = '';
@@ -152,6 +164,7 @@ function handleFileSelect(event) {
 }
 
 async function handleConversion() {
+    clearError();
     conversionLoaderElement.classList.remove('hidden');
     convertBtn.classList.add('hidden');
 
@@ -183,7 +196,7 @@ async function handleConversion() {
 
         conversionLoaderElement.classList.add('hidden');
 
-        alert("SLDPRT to STP conversion is a complex process requiring a server-side converter.\n\nThis is a demonstration of the UI flow. A placeholder model is shown, and you can download a dummy STP file.");
+        showError("SLDPRT to STP conversion is a complex process requiring a server-side converter.\n\nThis is a demonstration of the UI flow. A placeholder model is shown, and you can download a dummy STP file.");
 
     }, 1500);
 }
@@ -236,14 +249,15 @@ async function loadStepModel(fileName, fileContent) {
             currentModel = result.root;
             scene.add(currentModel);
             centerCamera(currentModel);
+            clearError();
         } else {
             console.error('Failed to load model:', result.message);
-            alert('Error: Could not load the model. Check the console for details.');
+            showError('Error: Could not load the model. Check the console for details.');
             currentModel = null;
         }
     } catch (error) {
         console.error(`An error occurred during STEP model import for "${fileName}":`, error);
-        alert('An unexpected error occurred. Check the console for details.');
+        showError('An unexpected error occurred. Check the console for details.');
         currentModel = null;
     } finally {
         loaderElement.classList.add('hidden');
@@ -262,9 +276,10 @@ async function loadSldprtModel(file) {
     try {
         revViewer = new CADMode(revViewerContainer);
         await revViewer.load(file);
+        clearError();
     } catch (error) {
         console.error(`An error occurred during SLDPRT model import for "${fileName}":`, error);
-        alert('An unexpected error occurred while loading the SLDPRT file. Check the console for details.');
+        showError('An unexpected error occurred while loading the SLDPRT file. Check the console for details.');
     } finally {
         loaderElement.classList.add('hidden');
         fileInput.value = ''; // Reset file input
