@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ImportManager, SetOCCTWorkerUrl } from 'occt-import-js';
-import { Viewer } from 'rev-viewer';
+// Import the CAD viewing mode from the bundled rev-viewer library.
+// The real library exposes `CADMode` which we map through the import
+// map to our local vendor copy.
+import { CADMode } from 'rev-viewer';
 
 let scene, camera, renderer, controls, currentModel, revViewer;
 let currentFileName = '';
@@ -182,7 +185,7 @@ async function loadSldprtModel(file) {
     revViewerContainer.innerHTML = '';
 
     try {
-        revViewer = new Viewer(revViewerContainer);
+        revViewer = new CADMode(revViewerContainer);
         await revViewer.load(file);
     } catch (error) {
         console.error('An error occurred during SLDPRT model import:', error);
