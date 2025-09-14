@@ -191,7 +191,35 @@ async function loadStepModel(fileName, fileContent) {
         currentModel.traverse(child => {
             if (child.isMesh) {
                 child.geometry.dispose();
-                child.material.dispose();
+                child.geometry = null;
+
+                const materials = Array.isArray(child.material) ? child.material : [child.material];
+                materials.forEach(material => {
+                    if (!material) return;
+                    const textureProps = [
+                        'map',
+                        'normalMap',
+                        'roughnessMap',
+                        'metalnessMap',
+                        'bumpMap',
+                        'alphaMap',
+                        'aoMap',
+                        'displacementMap',
+                        'emissiveMap',
+                        'lightMap',
+                        'envMap',
+                        'specularMap',
+                        'gradientMap'
+                    ];
+                    textureProps.forEach(prop => {
+                        if (material[prop]) {
+                            material[prop].dispose();
+                            material[prop] = null;
+                        }
+                    });
+                    material.dispose();
+                });
+                child.material = null;
             }
         });
         currentModel = null;
