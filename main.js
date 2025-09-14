@@ -102,6 +102,15 @@ function handleFileSelect(event) {
     if (!file) return;
 
     resetUI();
+
+    const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+    if (file.size > MAX_FILE_SIZE) {
+        alert('File is too large. Maximum allowed size is 50 MB.');
+        loaderElement.classList.add('hidden');
+        conversionLoaderElement.classList.add('hidden');
+        return;
+    }
+
     loaderElement.classList.remove('hidden');
 
     currentFileName = file.name;
