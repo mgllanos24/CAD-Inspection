@@ -8,6 +8,8 @@ import { CADMode } from 'rev-viewer';
 
 let scene, camera, renderer, controls, currentModel, revViewer;
 let currentFileName = '';
+let currentObjectUrl = null;
+let objectUrlRevokeTimeout = null;
 
 const viewerContainer = document.getElementById('viewer-container');
 const revViewerContainer = document.getElementById('rev-viewer-container');
@@ -155,6 +157,15 @@ async function handleConversion() {
     conversionLoaderElement.classList.remove('hidden');
     convertBtn.classList.add('hidden');
 
+    if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+    }
+    if (objectUrlRevokeTimeout) {
+        clearTimeout(objectUrlRevokeTimeout);
+        objectUrlRevokeTimeout = null;
+    }
+
     // Simulate conversion delay
     setTimeout(() => {
         showThreeJsViewer();
@@ -172,14 +183,31 @@ async function handleConversion() {
         // Create a dummy file for download
         const stpFileName = currentFileName.replace(/\.[^/.]+$/, "") + ".stp";
         const dummyStpContent = new Blob(["This is a placeholder for the converted STP file."], { type: 'text/plain' });
-        downloadLink.href = URL.createObjectURL(dummyStpContent);
+        currentObjectUrl = URL.createObjectURL(dummyStpContent);
+        downloadLink.href = currentObjectUrl;
         downloadLink.download = stpFileName;
         downloadLink.textContent = `Download ${stpFileName}`;
         downloadLink.classList.remove('hidden');
 
-        downloadLink.addEventListener('click', () => {
-            setTimeout(() => URL.revokeObjectURL(downloadLink.href), 0);
-        }, { once: true });
+        downloadLink.addEventListener(
+            'click',
+            () => {
+                setTimeout(() => {
+                    if (currentObjectUrl) {
+                        URL.revokeObjectURL(currentObjectUrl);
+                        currentObjectUrl = null;
+                    }
+                }, 0);
+            },
+            { once: true }
+        );
+
+        objectUrlRevokeTimeout = setTimeout(() => {
+            if (currentObjectUrl) {
+                URL.revokeObjectURL(currentObjectUrl);
+                currentObjectUrl = null;
+            }
+        }, 60000);
 
         conversionLoaderElement.classList.add('hidden');
 
