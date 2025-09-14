@@ -18,7 +18,9 @@ const convertBtn = document.getElementById('convert-btn');
 const downloadLink = document.getElementById('download-link');
 
 // Set occt-import-js worker path for local vendor copy
-SetOCCTWorkerUrl('./vendor/occt-import-js/dist/occt-import-js-worker.js');
+SetOCCTWorkerUrl(
+    new URL('./vendor/occt-import-js/dist/occt-import-js-worker.js', import.meta.url).href
+);
 
 // Log asset loading failures (e.g., missing modules or 404 responses)
 // to help users diagnose which resource failed and why.
