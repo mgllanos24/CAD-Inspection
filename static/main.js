@@ -11,6 +11,7 @@ let scene, camera, renderer, controls, currentModel, revViewer;
 let currentFileName = '';
 let currentObjectUrl = null;
 let objectUrlRevokeTimeout = null;
+let errorBanner = null;
 
 const viewerContainer = document.getElementById('viewer-container');
 const revViewerContainer = document.getElementById('rev-viewer-container');
@@ -31,6 +32,22 @@ window.addEventListener('error', (event) => {
     const asset = event.target?.src || event.filename;
     if (asset) {
         console.error(`Failed to load asset "${asset}":`, event.message || event.error);
+
+        if (!errorBanner) {
+            errorBanner = document.createElement('div');
+            errorBanner.style.position = 'fixed';
+            errorBanner.style.top = '0';
+            errorBanner.style.left = '0';
+            errorBanner.style.width = '100%';
+            errorBanner.style.backgroundColor = '#c0392b';
+            errorBanner.style.color = '#fff';
+            errorBanner.style.padding = '8px';
+            errorBanner.style.textAlign = 'center';
+            errorBanner.style.zIndex = '1000';
+            document.body.appendChild(errorBanner);
+        }
+
+        errorBanner.textContent = `Failed to load asset "${asset}". See console for details.`;
     }
 }, true);
 
