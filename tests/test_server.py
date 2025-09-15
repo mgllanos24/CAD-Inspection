@@ -18,6 +18,13 @@ def test_static_asset_served():
     assert response.status_code == 200
 
 
+def test_three_js_module_served():
+    """Ensure a representative Three.js module is accessible."""
+    client = app.test_client()
+    response = client.get('/vendor/three/build/math/Line3.js')
+    assert response.status_code == 200
+
+
 def test_nonexistent_route_returns_404():
     client = app.test_client()
     response = client.get('/does-not-exist')
